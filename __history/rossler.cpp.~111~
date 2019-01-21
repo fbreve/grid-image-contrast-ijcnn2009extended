@@ -1,0 +1,734 @@
+//$$---- Thread CPP ----
+//---------------------------------------------------------------------------
+
+#include <vcl.h>
+#pragma hdrstop
+#include "rossler.h"
+#pragma package(smart_init)
+
+//---------------------------------------------------------------------------
+
+//   Important: Methods and properties of objects in VCL can only be
+//   used in a method called using Synchronize, for example:
+//
+//      Synchronize(&UpdateCaption);
+//
+//   where UpdateCaption could look like:
+//
+//      void __fastcall wcrun::UpdateCaption()
+//      {
+//        Form1->Caption = "Updated in a thread";
+//      }
+//---------------------------------------------------------------------------
+
+
+
+__fastcall TWCRun::TWCRun(bool CreateSuspended)
+	: TThread(CreateSuspended)
+{
+
+}
+//---------------------------------------------------------------------------
+
+__fastcall TWCRun::Synchronize()
+{
+	return(true);
+}
+
+double __fastcall dx(double y, double z, double omega, double coupling)
+{
+	return(-omega * y - z + coupling);
+}
+
+double __fastcall dy(double x, double y, double omega)
+{
+	return(omega * x + 0.15 * y);
+}
+
+double __fastcall dz(double x, double z)
+{
+	return(0.2 + z * (x - 10.0));
+}
+
+double __fastcall fcoupling(double **x, short int i, short int j, int ***T, int epison)
+{
+	return (T[i][j][0] * x[i-1][j-1] +  T[i][j][1] * x[i-1][j]		+
+			T[i][j][2] * x[i-1][j+1] +	T[i][j][3] * x[i][j-1] 		+
+			T[i][j][4] * x[i][j+1] 	 +	T[i][j][5] * x[i+1][j-1] 	+
+			T[i][j][6] * x[i+1][j] 	 +	T[i][j][7] * x[i+1][j+1] 	-
+			epison * x[i][j]);
+}
+
+void __fastcall fillborders(double ***x,short int M,short int N)
+{
+	short int i;
+	for(i = 1; i <= M; i++)
+	{
+		x[i][0][0] = 600;
+		x[i][N+1][0] = 600;
+	}
+	for(i = 0; i <= N+1; i++)
+	{
+		x[0][i][0] = 600;
+		x[M+1][i][0] = 600;
+	}
+}
+
+
+void __fastcall TWCRun::Execute()
+{
+	// variaveis da rede de osciladores
+	 		 x   	= CreateDoubleArray(M+2,N+2);
+	double **y   	= CreateDoubleArray(M+2,N+2);
+	double **z	 	= CreateDoubleArray(M+2,N+2);
+	double **kx1 	= CreateDoubleArray(M+2,N+2);
+	double **kx2 	= CreateDoubleArray(M+2,N+2);
+	double **kx3 	= CreateDoubleArray(M+2,N+2);
+	double **kx4 	= CreateDoubleArray(M+2,N+2);
+	double **ky1 	= CreateDoubleArray(M+2,N+2);
+	double **ky2	= CreateDoubleArray(M+2,N+2);
+	double **ky3	= CreateDoubleArray(M+2,N+2);
+	double **ky4 	= CreateDoubleArray(M+2,N+2);
+	double **kz1	= CreateDoubleArray(M+2,N+2);
+	double **kz2 	= CreateDoubleArray(M+2,N+2);
+	double **kz3 	= CreateDoubleArray(M+2,N+2);
+	double **kz4 	= CreateDoubleArray(M+2,N+2);
+	double **omega  = CreateDoubleArray(M+2,N+2);
+	int ***T  		= CreateIntArray(M+2,N+2,8);
+	int ***TN  		= CreateIntArray(M+2,N+2,8);
+	int **epison 	= CreateIntArray(M+2,N+2);
+	int **epison2 	= CreateIntArray(M+2,N+2);
+
+	double **couplingx = CreateDoubleArray(M+2,N+2);
+	double **couplingKx = CreateDoubleArray(M+2,N+2);
+
+	double **phase   = CreateDoubleArray(M+2,N+2);
+	double **phase_l = CreateDoubleArray(M+2,N+2);
+	int    **cycle	 = CreateIntArray(M+2,N+2);
+
+	// contadores de loop
+	short int i,j,j2,j3;
+
+	// variaveis do sistema de segmentação
+	//int seg_sync_window_t = seg_sync_window * (1/t_step);
+	//img_obj = CreateIntArray(M+2,N+2);
+	//double *obj_phase = CreateDoubleArray(M*N);
+
+	// variaveis do sistema de atenção
+	double **att_xa  		= CreateDoubleArray(M+2,N+2); // x no instante t-t_tstep
+	att_contrast 	= CreateDoubleArray(M+2,N+2); // contraste relativo
+	//double **att_omega		= CreateDoubleArray(M+2,N+2); // omega modificado para atenção
+	att_conttime    = CreateDoubleArray(M+2,N+2); // |contraste - tempo|
+	double **att_kn			= CreateDoubleArray(M+2,N+2); // força de acoplamento relativa ao contraste
+	double att_mean_feat[4];  // armazena o valor médio de cada atributo entre todos os pixels
+	double att_cont_max=0;  		// acoplamento máximo relativo ao contraste antes da normalização
+	double att_cont_min=10000000;	// acoplamento mínimo relativo ao contraste antes da normalização
+	int att_val_pix=0; 		// numero de pixels válidos (não fundo)
+	int att_window_t = 0;
+	int att_window = int(1/t_step);;
+
+	// variável de atualização da interface
+	paint=false;
+
+	// variaveis do sistema de acoplamento adaptativo
+	//int adp_window_t=0;
+	//int adp_window=1;
+
+	// variaveis do sistema de log
+	FILE *fp1;
+	FILE *fp2;
+	FILE *fp3;
+	FILE *fp4;
+	int log_window_t = int(log_window * (1/t_step));
+	int log_qt_obj = -1;		// conta quantos objetos serão logados
+	int log_qt_pix = 0;			// conta quantos pixels serão logados
+
+	// inicialização de parametros do sistema de atenção e segmentação
+	/*
+	seg_objc=0;
+	seg_done=false;
+	for(i=1;i<=M;i++)
+	{
+		for(int j=1;j<=N;j++)
+		{
+			img_obj[i][j]=0;
+		}
+	}
+   */
+
+   //preencher bordas da imagem
+   fillborders(image,M,N);
+
+   // for random uniform
+   double noiseM = pow(2, 20);
+   double FM = (double)noiseM;
+   double noiseX = 566387.0;
+   double noiseA = pow(2, 10) + 3;
+   double FX;
+
+   // inicializando Omega, Phase e Cycle
+	//randomize();
+	for(i = 1; i <= M; i++)
+	{
+		for (j = 1; j <= N; j++)
+		{
+			//omega[i][j]=1-(delta_omega*0.5) + delta_omega * random(1000)*0.001;
+			//omega[i][j] = 1 - (delta_omega*0.5) + delta_omega * (image[i][j][0]/255);
+			//omega[i][j]=0.900 + 0.20 * (image[i][j][0]/255);
+			phase[i][j]=0;
+			cycle[i][j]=0;
+		}
+	}
+
+	// calculando média pixels e contraste máximo
+	for(j2=0;j2<4;j2++) att_mean_feat[j2]=0.0;
+
+	for(i = 1; i <= M; i++)
+	{
+		for(j = 1; j <= N; j++)
+		{
+			for(j2=0;j2<4;j2++)
+			{
+				att_mean_feat[j2] += image[i][j][j2];
+			}
+			att_val_pix++;
+		}
+	}
+	for(j2=0;j2<4;j2++) att_mean_feat[j2] /= att_val_pix;
+
+	// calculando o contraste relativo de cada pixel
+	for(i = 1; i <= M; i++)
+		{
+		for(j = 1; j <= N; j++)
+		{
+			att_contrast[i][j]=0;
+			// contraste da intensidade com peso 3
+			att_contrast[i][j]+=(fabs(image[i][j][j2]-att_mean_feat[j2])/255)*3;
+			// contraste dos demais atributos com peso 1
+			for(j2=1;j2<4;j2++) att_contrast[i][j]+=(fabs(image[i][j][j2]-att_mean_feat[j2])/255);
+			// guardando valor máximo de contraste para posterior normalização
+			if (att_cont_max<att_contrast[i][j]) att_cont_max=att_contrast[i][j];
+			// guardando valor mínimo de contraste para posterior normalização
+			if (att_cont_min>att_contrast[i][j]) att_cont_min=att_contrast[i][j];
+		}
+	}
+
+	// normalizando contraste
+	for(i = 1; i <= M; i++)
+		for(j = 1; j <= N; j++)
+			 att_contrast[i][j] = (att_contrast[i][j]-att_cont_min)/(att_cont_max-att_cont_min);
+
+	// calculando omega
+	for(i = 1; i <= M; i++)
+		for(j = 1; j <= N; j++)
+			omega[i][j]= 1-(delta_omega*0.5) + delta_omega * att_contrast[i][j];
+
+	// determinando vizinhança
+	for(i = 0; i <= M+1; i++)
+		for(j = 0; j <= N+1; j++)
+			for(j2 = 0; j2 <= 7; j2++)
+			{
+				T[i][j][j2] = 0;
+				TN[i][j][j2] = 0;
+			}
+
+	for(i = 1; i <= M; i++)
+	{
+		for(j = 1; j <= N; j++)
+		{
+			// calculando acoplamentos positivos
+			if(fabs(image[i][j][0] - image[i-1][j-1][0]) < cplimit) T[i][j][0] = 1;
+			if(fabs(image[i][j][0] - image[i-1][j][0])   < cplimit) T[i][j][1] = 1;
+			if(fabs(image[i][j][0] - image[i-1][j+1][0]) < cplimit) T[i][j][2] = 1;
+			if(fabs(image[i][j][0] - image[i][j-1][0])   < cplimit) T[i][j][3] = 1;
+			if(fabs(image[i][j][0] - image[i][j+1][0])   < cplimit) T[i][j][4] = 1;
+			if(fabs(image[i][j][0] - image[i+1][j-1][0]) < cplimit) T[i][j][5] = 1;
+			if(fabs(image[i][j][0] - image[i+1][j][0])   < cplimit) T[i][j][6] = 1;
+			if(fabs(image[i][j][0] - image[i+1][j+1][0]) < cplimit) T[i][j][7] = 1;
+			// calculando acoplamentos negativos
+			if(fabs(image[i][j][0] - image[i-1][j-1][0]) < 300) TN[i][j][0] = 1;
+			if(fabs(image[i][j][0] - image[i-1][j][0])   < 300) TN[i][j][1] = 1;
+			if(fabs(image[i][j][0] - image[i-1][j+1][0]) < 300) TN[i][j][2] = 1;
+			if(fabs(image[i][j][0] - image[i][j-1][0])   < 300) TN[i][j][3] = 1;
+			if(fabs(image[i][j][0] - image[i][j+1][0])   < 300) TN[i][j][4] = 1;
+			if(fabs(image[i][j][0] - image[i+1][j-1][0]) < 300) TN[i][j][5] = 1;
+			if(fabs(image[i][j][0] - image[i+1][j][0])   < 300) TN[i][j][6] = 1;
+			if(fabs(image[i][j][0] - image[i+1][j+1][0]) < 300) TN[i][j][7] = 1;
+		}
+	}
+
+	// determinando epison2
+	for(i = 1; i <= M; i++)
+	{
+		for(j = 1; j <= N; j++)
+		{
+			epison[i][j] = 0;
+			epison2[i][j] = 0;
+			for(j2 = 0; j2<=7; j2++)
+			{
+				epison[i][j] += T[i][j][j2];
+				epison2[i][j] += TN[i][j][j2];
+			}
+		}
+	}
+
+
+	// inicializando x, y e z
+	for(i = 0; i <= M+1; i++)
+	{
+		x[i][0] = 0.0;
+		x[i][N+1] = 0.0;
+		y[i][0] = 0.0;
+		y[i][N+1] = 0.0;
+		z[i][0] = 0.0;
+		z[i][N+1] = 0.0;
+	}
+	for(j = 0; j <= N+1; j++)
+	{
+		x[0][j] = 0.0;
+		x[M+1][j] = 0.0;
+		y[0][j] = 0.0;
+		y[M+1][j] = 0.0;
+		z[0][j] = 0.0;
+		z[M+1][j] = 0.0;
+	}
+
+
+	for(i = 1; i <= M; i++)
+	{
+		for (j = 1; j<=N; j++)
+		{
+			noiseX = fmod(noiseA*noiseX, noiseM);
+			FX = noiseX;
+			x[i][j] = FX/FM*35-15;
+			noiseX = fmod(noiseA*noiseX, noiseM);
+			FX = noiseX;
+			y[i][j] = FX/FM*35-20;
+			noiseX = fmod(noiseA*noiseX, noiseM);
+			FX = noiseX;
+			z[i][j] = FX/FM*30;
+		}
+	}
+
+	// inicializando arquivos
+	// fase acumulada
+	if((fp1 = fopen("serie.txt", "w")) == NULL)
+	{
+		printf("O arquivo não pode ser criado");
+		exit(1);
+	}
+	// serie temporal de x
+	if((fp2 = fopen("serie2.txt", "w")) == NULL)
+	{
+		printf("O arquivo não pode ser criado");
+		exit(1);
+	}
+
+	// serie temporal de y
+	if((fp3 = fopen("serie3.txt", "w")) == NULL)
+	{
+		printf("O arquivo não pode ser criado");
+		exit(1);
+	}
+
+	// serie temporal de z
+	if((fp4 = fopen("serie4.txt", "w")) == NULL)
+	{
+		printf("O arquivo não pode ser criado");
+		exit(1);
+	}
+
+	// conta quantos pixels e quantos objetos serão logados
+	for(i = 1; i <= M; i++)
+	{
+		for(j = 1; j <= N; j++)
+		{
+			if (log_pixels[i-1][j-1]>log_qt_obj) log_qt_obj=log_pixels[i-1][j-1];
+			if(log_pixels[i-1][j-1]>=0) log_qt_pix++;
+		}
+	}
+
+	// colocando pixels que serão logados em uma lista
+	int **log_pixels_list = CreateIntArray(log_qt_pix,3);
+	j3=0;
+	for(j2=0;j2<=log_qt_obj;j2++)
+	{
+		for(i=1;i<=M;i++)
+		{
+			for(j=1;j<=N;j++)
+			{
+				if(log_pixels[i-1][j-1]==j2)
+				{
+					log_pixels_list[j3][0]=i;
+					log_pixels_list[j3][1]=j;
+					log_pixels_list[j3][2]=j2;
+					j3++;
+				}
+			}
+		}
+	}
+	// definindo acoplamento negativo e |contraste - tempo|^salexp
+	for(i = 1; i <= M; i++)
+	{
+		for(j = 1; j <= N; j++)
+		{
+			 att_conttime[i][j] = exp(-pow(att_contrast[i][j]-1.0,2.0)/(2.0*pow(sal_exp,2.0)));
+			 //att_conttime[i][j] = pow(fabs(att_contrast[i][j]),sal_exp);
+			 //att_omega[i][j] = 2.0 * att_conttime[i][j] + omega[i][j] * (1-att_conttime[i][j]);
+			 att_kn[i][j] = 0.02 - att_conttime[i][j] * 0.02;
+		}
+	}
+
+
+	// obtendo as séries temporais
+	for(t = t_start; t <= t_end; t += t_step)
+	{
+		// logging
+		if (logging && t >= t_record && (t <= t_record_end || !logging_end))
+		{
+			log_window_t++;
+			if (log_window_t > log_window * (1/t_step))
+			{
+				/*
+				// zerando as variáveis
+				for(i=0;i<=log_qt_obj;i++)
+				{
+					log_obj_phase_mean[i]=0;
+					log_obj_phase_stddev[i]=0;
+					log_obj_pixel_count[i]=0;
+				}
+				// somando as fases dos osciladores de cada objeto
+				for(i=1;i<=M;i++)
+					for(j=1;j<=N;j++)
+						if (log_pixels[i-1][j-1]>=0)
+						{
+							log_obj_phase_mean[log_pixels[i-1][j-1]] += phase[i][j];
+							log_obj_pixel_count[log_pixels[i-1][j-1]]++;
+						}
+				// calculando médias
+				for(i=0;i<=log_qt_obj;i++)
+					log_obj_phase_mean[i]/=log_obj_pixel_count[i];
+				// agora calcularemos as variancias
+				for(i=1;i<=M;i++)
+					for(j=1;j<=N;j++)
+						if (log_pixels[i-1][j-1]>=0)
+							log_obj_phase_stddev[log_pixels[i-1][j-1]] += pow(phase[i][j]-log_obj_phase_mean[log_pixels[i-1][j-1]],2);
+				// e finalmente o desvio padrão
+				for(i=0;i<=log_qt_obj;i++)
+					log_obj_phase_stddev[i] = sqrt(log_obj_phase_stddev[i]/log_obj_pixel_count[i]);
+				// agora imprimindo log
+				fprintf(fp1, "%.2f ", t);
+				for(i=0;i<=log_qt_obj;i++)
+					fprintf(fp1, "%g ", log_obj_phase_stddev[i]);
+				fprintf(fp1, "\n");
+				*/
+
+				// log de fase acumulada, x, y e z
+				for(i=0;i<log_qt_pix;i++)
+				{
+					fprintf(fp1, "%g ", phase[log_pixels_list[i][0]][log_pixels_list[i][1]]);
+					fprintf(fp2, "%g ", 	x[log_pixels_list[i][0]][log_pixels_list[i][1]]);
+					fprintf(fp3, "%g ", 	y[log_pixels_list[i][0]][log_pixels_list[i][1]]);
+					fprintf(fp4, "%g ", 	z[log_pixels_list[i][0]][log_pixels_list[i][1]]);
+				}
+				fprintf(fp1, "\n");
+				fprintf(fp2, "\n");
+				fprintf(fp3, "\n");
+				fprintf(fp4, "\n");
+				log_window_t=0;
+			}
+		}
+
+		// atualizando acoplamento negativo e |contraste - tempo|^salexp (se shifting ligado)
+		if (shifting==true)
+		{
+			if (att_window_t>=att_window)
+			{
+				for(i = 1; i <= M; i++)
+				{
+					for(j = 1; j <= N; j++)
+					{
+						 att_conttime[i][j] = exp(-pow(att_contrast[i][j]-(1.0-(t/t_end)),2.0)/(2.0*pow(sal_exp,2.0)));
+						 att_kn[i][j] = 0.02 * (1.0-att_conttime[i][j]);
+					}
+				}
+				att_window_t = 0;
+			}
+			else
+			{
+				att_window_t++;
+			}
+
+		}
+
+		// iteração
+		for(i = 1; i <= M; i++)
+		{
+			for(j = 1;j <= N; j++)
+			{
+				couplingx[i][j] = att_conttime[i][j] * k * fcoupling(x,i,j,T,epison[i][j]) - att_kn[i][j] * fcoupling(x,i,j,TN,epison2[i][j]);
+			}
+		}
+		for(i=1; i<=M; i++)
+		{
+			for(j=1; j<=N; j++)
+			{
+				kx1[i][j] = t_step*dx(y[i][j], z[i][j], omega[i][j], couplingx[i][j]);
+				ky1[i][j] = t_step*dy(x[i][j], y[i][j], omega[i][j]);
+				kz1[i][j] = t_step*dz(x[i][j], z[i][j]);
+			}
+		}
+
+		for(i = 1; i <= M; i++)
+		{
+			for(j = 1;j <= N; j++)
+			{
+				couplingKx[i][j] = att_conttime[i][j] * k * fcoupling(kx1,i,j,T,epison[i][j]) - att_kn[i][j] * fcoupling(kx1,i,j,TN,epison2[i][j]);
+			}
+		}
+		for(i = 1; i <= M; i++)
+		{
+			for(j = 1; j <= N; j++)
+			{
+				kx2[i][j] = t_step*dx(y[i][j]+0.5*ky1[i][j], z[i][j]+0.5*kz1[i][j], omega[i][j], couplingx[i][j]+0.5*couplingKx[i][j]);
+				ky2[i][j] = t_step*dy(x[i][j]+0.5*kx1[i][j], y[i][j]+0.5*ky1[i][j], omega[i][j]);
+				kz2[i][j] = t_step*dz(x[i][j]+0.5*kx1[i][j], z[i][j]+0.5*kz1[i][j]);
+			}
+		}
+
+		for(i = 1; i <= M; i++)
+		{
+			for(j = 1; j <= N; j++)
+			{
+				couplingKx[i][j] = att_conttime[i][j] * k * fcoupling(kx2,i,j,T,epison[i][j]) - att_kn[i][j] * fcoupling(kx2,i,j,TN,epison2[i][j]);
+			}
+		}
+		for(i = 1; i <= M; i++)
+		{
+			for(j = 1; j <= N; j++)
+			{
+				kx3[i][j] = t_step*dx(y[i][j]+0.5*ky2[i][j], z[i][j]+0.5*kz2[i][j], omega[i][j], couplingx[i][j]+0.5*couplingKx[i][j]);
+				ky3[i][j] = t_step*dy(x[i][j]+0.5*kx2[i][j], y[i][j]+0.5*ky2[i][j], omega[i][j]);
+				kz3[i][j] = t_step*dz(x[i][j]+0.5*kx2[i][j], z[i][j]+0.5*kz2[i][j]);
+			}
+		}
+		for(i = 1; i <= M; i++)
+		{
+			for(j = 1; j <= N; j++)
+			{
+				couplingKx[i][j] = att_conttime[i][j] * k * fcoupling(kx3,i,j,T,epison[i][j]) - att_kn[i][j] * fcoupling(kx3,i,j,TN,epison2[i][j]);
+			}
+		}
+		for(i = 1; i <= M; i++)
+		{
+			for(j = 1; j <= N; j++)
+			{
+				kx4[i][j] = t_step * dx(y[i][j]+ky3[i][j], z[i][j]+kz3[i][j], omega[i][j], couplingx[i][j]+couplingKx[i][j]);
+				ky4[i][j] = t_step * dy(x[i][j]+kx3[i][j], y[i][j]+ky3[i][j], omega[i][j]);
+				kz4[i][j] = t_step * dz(x[i][j]+kx3[i][j], z[i][j]+kz3[i][j]);
+			}
+		}
+
+		for(i = 1; i <= M; i++)
+		{
+			for(j = 1; j <= N; j++)
+			{
+				x[i][j] += (kx1[i][j] + 2*kx2[i][j] + 2*kx3[i][j] + kx4[i][j])/6;
+				y[i][j] += (ky1[i][j] + 2*ky2[i][j] + 2*ky3[i][j] + ky4[i][j])/6;
+				z[i][j] += (kz1[i][j] + 2*kz2[i][j] + 2*kz3[i][j] + kz4[i][j])/6;
+			}
+		}
+
+		// contador de fase
+		if (t >= t_segment)
+		{
+			for(i=1; i<=M; i++)
+			{
+				for(j=1; j<=N; j++)
+				{
+					phase_l[i][j] = phase[i][j];
+					phase[i][j] = atan2(y[i][j],x[i][j]) + cycle[i][j]*2.0*M_PI;
+					if (phase[i][j]-phase_l[i][j]<-6)
+					{
+						cycle[i][j]++;
+						phase[i][j]+= 2.0*M_PI;
+					}
+					else if (phase[i][j]-phase_l[i][j]>6)
+					{
+						cycle[i][j]--;
+						phase[i][j]-= 2.0*M_PI;
+					}
+				}
+			}
+		}
+
+		// segmentação
+		/*
+		if (t >= t_segment)
+		{
+			// mecanismo de segmentação
+			seg_sync_window_t++;
+			if (seg_sync_window_t >= seg_sync_window * (1/t_step))
+			{
+				// para cada objeto já segmentado, marcar fase como -1
+				for(i = 0; i <= seg_objc; i++) obj_phase[i]=-1.0;
+				// primeiro vamos obter a fase de cada objeto
+				for(i = 1; i <= M; i++)
+				{
+					for(j = 1; j <= N; j++)
+					{
+						// se é o primeiro oscilador do objeto a aparecer, fase do objeto = fase do oscilador
+						if (obj_phase[img_obj[i][j]]<0.0) obj_phase[img_obj[i][j]]=phase[i][j];
+					}
+				}
+				// agora vamos ver se cada oscilador está sincronizado com seu objeto
+				for(i = 1; i <= M; i++)
+				{
+					for(j = 1; j <= N; j++)
+					{
+						// se a fase for maior que 2pi diferente da do objeto
+						if (fabs(phase[i][j]-obj_phase[img_obj[i][j]])>(2.0*M_PI))
+						{
+							// verificar se pertence a outro objeto
+							j2 = 0;
+							while (j2 <= seg_objc)
+							{
+								// se está na faixa de fase do objeto j2
+								if (fabs(phase[i][j]-obj_phase[j2])<(2.0*M_PI))
+								{
+									//achamos objeto desse oscilador
+									img_obj[i][j]=j2;
+									break;
+								}
+								j2++;
+							}
+							// se não achou objeto do oscilador
+							if (j2>seg_objc)
+							{
+								//criar novo objeto e colocar oscilador nele
+								seg_objc++;
+								img_obj[i][j]=seg_objc;
+								obj_phase[seg_objc]=phase[i][j];
+							}
+							paint = true;
+						}
+					}
+				}
+				seg_sync_window_t=0;
+			}
+		}
+		*/
+
+		// acoplamento adaptativo
+		/*
+		if (t >= t_segment)
+		{
+			adp_window_t++;
+			if (adp_window_t >= adp_window * (1/t_step))
+			{
+				for(i = 1; i <= M; i++)
+				{
+					for(j = 1; j <= N; j++)
+					{
+						if(T[i][j][0]==1.0 && fabs(phase[i][j] - phase[i-1][j-1]) > 2.0 * M_PI)
+						{
+							T[i][j][0] = 0.0;
+							epison[i][j]--;
+						}
+						if(T[i][j][1]==1.0 && fabs(phase[i][j] - phase[i-1][j])   > 2.0 * M_PI)
+						{
+							T[i][j][1] = 0.0;
+							epison[i][j]--;
+						}
+						if(T[i][j][2]==1.0 && fabs(phase[i][j] - phase[i-1][j+1]) > 2.0 * M_PI)
+						{
+							T[i][j][2] = 0.0;
+							epison[i][j]--;
+						}
+						if(T[i][j][3]==1.0 && fabs(phase[i][j] - phase[i][j-1])   > 2.0 * M_PI)
+						{
+							T[i][j][3] = 0.0;
+							epison[i][j]--;
+						}
+						if(T[i][j][4]==1.0 && fabs(phase[i][j] - phase[i][j+1])   > 2.0 * M_PI)
+						{
+							T[i][j][4] = 0.0;
+							epison[i][j]--;
+						}
+						if(T[i][j][5]==1.0 && fabs(phase[i][j] - phase[i+1][j-1]) > 2.0 * M_PI)
+						{
+							T[i][j][5] = 0.0;
+							epison[i][j]--;
+						}
+						if(T[i][j][6]==1.0 && fabs(phase[i][j] - phase[i+1][j])   > 2.0 * M_PI)
+						{
+							T[i][j][6] = 0.0;
+							epison[i][j]--;
+						}
+						if(T[i][j][7]==1.0 && fabs(phase[i][j] - phase[i+1][j+1]) > 2.0 * M_PI)
+						{
+							T[i][j][7] = 0.0;
+							epison[i][j]--;
+						}
+					}
+				}
+				adp_window_t=0;
+			}
+		}
+		*/
+
+		// contador de tempo
+		clock_end = clock();
+
+		// condição de parada
+		if (this->Terminated)
+		{
+			break;
+		}
+	}
+	fclose(fp1);
+	fclose(fp2);
+	fclose(fp3);
+	fclose(fp4);
+	DestroyArray(x,M+2,N+2);
+	DestroyArray(y,M+2,N+2);
+	DestroyArray(kx1,M+2,N+2);
+	DestroyArray(kx2,M+2,N+2);
+	DestroyArray(kx3,M+2,N+2);
+	DestroyArray(kx4,M+2,N+2);
+	DestroyArray(ky1,M+2,N+2);
+	DestroyArray(ky2,M+2,N+2);
+	DestroyArray(ky3,M+2,N+2);
+	DestroyArray(ky4,M+2,N+2);
+	DestroyArray(kz1,M+2,N+2);
+	DestroyArray(kz2,M+2,N+2);
+	DestroyArray(kz3,M+2,N+2);
+	DestroyArray(kz4,M+2,N+2);
+
+	DestroyArray(omega,M+2,N+2);
+	DestroyArray(T,M+2,N+2,8);
+	DestroyArray(TN,M+2,N+2,8);
+	DestroyArray(epison,M+2,N+2);
+	DestroyArray(epison2,M+2,N+2);
+	DestroyArray(image,M+2,N+2,4);
+
+	DestroyArray(phase,M+2,N+2);
+	DestroyArray(phase_l,M+2,N+2);
+	DestroyArray(cycle,M+2,N+2);
+
+	DestroyArray(couplingx,M+2,N+2);
+	DestroyArray(couplingKx,M+2,N+2);
+
+	//DestroyArray(obj_phase,M*N);
+
+	DestroyArray(att_xa,M+2,N+2);
+	//DestroyArray(att_omega,M+2,N+2);
+	DestroyArray(att_contrast,M+2,N+2);
+	DestroyArray(att_conttime,M+2,N+2);
+	DestroyArray(att_kn,M+2,N+2);
+
+	DestroyArray(log_pixels_list,log_qt_pix,3);
+
+}
+
+//---------------------------------------------------------------------------

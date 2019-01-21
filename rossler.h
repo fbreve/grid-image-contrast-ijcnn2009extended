@@ -1,0 +1,53 @@
+//$$---- Thread HDR ----
+//---------------------------------------------------------------------------
+
+#ifndef rosslerH
+#define rosslerH
+//---------------------------------------------------------------------------
+#include <Classes.hpp>
+#include <time.h>
+#include <stdio.h>
+#include <math.h>
+#include "dynarray.h"
+//---------------------------------------------------------------------------
+
+class TWCRun : public TThread
+{
+private:
+protected:
+	void __fastcall Execute();
+public:
+	__fastcall TWCRun(bool CreateSuspended);
+	__fastcall Synchronize();
+	double **x;				// parâmetro x do oscilador
+	double k; 				// coupling force
+	double t_step; 			// time step
+	double t_start;   		// initial time
+	double t_segment;		// start segmenting image
+	double t_end;   		// finish time
+	double t;				// time counter
+	short int cplimit; 		// Coupling limiar between points
+	double sal_exp;			// Exponencial de saliência
+	double delta_omega;		// Delta Omega
+	short int M;			// image width
+	short int N;			// image height
+	//int **img_obj;			// objetos detectados
+	double t_record; 		// start logging time
+	double t_record_end;	// stop logging time
+	boolean logging;		// logging enabled
+	boolean logging_end;	// stop logging at specified time enabled
+	double ***image;			// image loaded from file
+	double att_t_start;			// start attention time
+	int seg_objc;  	   			// detected objects counter
+	bool paint;					// informa a interface que ela deve atualizar a figura 
+	bool seg_done;				// segmentation concluded (não está sendo usado)
+	bool shifting; 			// finish when segmentation is done (não está sendo usado)
+	double seg_sync_window;
+	double log_window;
+	int **log_pixels;			// pixels that should be logged
+	clock_t clock_start, clock_end;
+	double **att_conttime;
+	double **att_contrast;
+};
+//---------------------------------------------------------------------------
+#endif

@@ -1,0 +1,426 @@
+object Form1: TForm1
+  Left = 206
+  Top = 113
+  Caption = 'R'#246'ssler Oscillators Salient Object Detector'
+  ClientHeight = 523
+  ClientWidth = 624
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  OldCreateOrder = False
+  Position = poDesigned
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Label3: TLabel
+    Left = 28
+    Top = 452
+    Width = 76
+    Height = 13
+    Caption = 'Execution Time:'
+  end
+  object lblt: TLabel
+    Left = 161
+    Top = 432
+    Width = 6
+    Height = 13
+    Alignment = taRightJustify
+    Caption = '0'
+  end
+  object Label1: TLabel
+    Left = 28
+    Top = 432
+    Width = 51
+    Height = 13
+    Caption = 'Tempo (t):'
+  end
+  object lblExeTime: TLabel
+    Left = 161
+    Top = 452
+    Width = 6
+    Height = 13
+    Alignment = taRightJustify
+    Caption = '0'
+  end
+  object Label2: TLabel
+    Left = 173
+    Top = 452
+    Width = 39
+    Height = 13
+    Caption = 'seconds'
+  end
+  object Label4: TLabel
+    Left = 16
+    Top = 56
+    Width = 91
+    Height = 13
+    Caption = 'Coupling Force (k):'
+  end
+  object Label5: TLabel
+    Left = 16
+    Top = 110
+    Width = 53
+    Height = 13
+    Caption = 'Initial time:'
+  end
+  object Label6: TLabel
+    Left = 16
+    Top = 137
+    Width = 88
+    Height = 13
+    Caption = 'Start logging time:'
+  end
+  object Label7: TLabel
+    Left = 16
+    Top = 347
+    Width = 54
+    Height = 13
+    Caption = 'Finish time:'
+  end
+  object Label8: TLabel
+    Left = 16
+    Top = 83
+    Width = 50
+    Height = 13
+    Caption = 'Time step:'
+  end
+  object Label9: TLabel
+    Left = 16
+    Top = 244
+    Width = 149
+    Height = 13
+    Caption = 'Coupling limiar between points:'
+  end
+  object Label10: TLabel
+    Left = 16
+    Top = 217
+    Width = 109
+    Height = 13
+    Caption = 'Start segmenting time:'
+  end
+  object Label11: TLabel
+    Left = 16
+    Top = 269
+    Width = 102
+    Height = 13
+    Caption = 'Salience Exponential:'
+  end
+  object Image1: TImage
+    Left = 259
+    Top = 8
+    Width = 355
+    Height = 236
+    Center = True
+    Proportional = True
+    Stretch = True
+  end
+  object Label12: TLabel
+    Left = 16
+    Top = 296
+    Width = 66
+    Height = 13
+    Caption = 'Delta Omega:'
+  end
+  object Label13: TLabel
+    Left = 28
+    Top = 471
+    Width = 98
+    Height = 13
+    Caption = 'Segmented Objects:'
+  end
+  object lblSegObj: TLabel
+    Left = 161
+    Top = 471
+    Width = 6
+    Height = 13
+    Alignment = taRightJustify
+    Caption = '0'
+  end
+  object lblSegmentationDone: TLabel
+    Left = 173
+    Top = 471
+    Width = 29
+    Height = 13
+    Caption = 'Done'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
+    Visible = False
+  end
+  object ImageSegmented: TImage
+    Left = 259
+    Top = 250
+    Width = 355
+    Height = 236
+    Center = True
+    Proportional = True
+    Stretch = True
+  end
+  object Label14: TLabel
+    Left = 16
+    Top = 322
+    Width = 121
+    Height = 13
+    Caption = 'Synchronization Window:'
+  end
+  object Label15: TLabel
+    Left = 16
+    Top = 189
+    Width = 82
+    Height = 13
+    Caption = 'Logging Interval:'
+  end
+  object lblSizeTxt: TLabel
+    Left = 16
+    Top = 37
+    Width = 59
+    Height = 13
+    Caption = 'Image Size: '
+  end
+  object lblSize: TLabel
+    Left = 187
+    Top = 37
+    Width = 36
+    Height = 13
+    Alignment = taRightJustify
+    Caption = '25 x 25'
+  end
+  object Label16: TLabel
+    Left = 16
+    Top = 163
+    Width = 86
+    Height = 13
+    Caption = 'Stop logging time:'
+  end
+  object Label17: TLabel
+    Left = 184
+    Top = 480
+    Width = 37
+    Height = 13
+    Caption = 'Label17'
+  end
+  object btnRun: TButton
+    Left = 19
+    Top = 392
+    Width = 88
+    Height = 25
+    Caption = '&Run'
+    TabOrder = 17
+    OnClick = btnRunClick
+  end
+  object btnCancel: TButton
+    Left = 132
+    Top = 392
+    Width = 91
+    Height = 25
+    Caption = '&Cancel'
+    Enabled = False
+    TabOrder = 18
+    OnClick = btnCancelClick
+  end
+  object edtk: TEdit
+    Left = 169
+    Top = 53
+    Width = 54
+    Height = 21
+    BiDiMode = bdRightToLeft
+    ParentBiDiMode = False
+    TabOrder = 2
+    Text = '0,05'
+  end
+  object edtt_start: TEdit
+    Left = 169
+    Top = 107
+    Width = 54
+    Height = 21
+    BiDiMode = bdRightToLeft
+    ParentBiDiMode = False
+    TabOrder = 4
+    Text = '0'
+  end
+  object edtt_record: TEdit
+    Left = 169
+    Top = 134
+    Width = 54
+    Height = 21
+    BiDiMode = bdRightToLeft
+    Enabled = False
+    ParentBiDiMode = False
+    TabOrder = 5
+    Text = '0'
+  end
+  object edtt_end: TEdit
+    Left = 169
+    Top = 344
+    Width = 54
+    Height = 21
+    BiDiMode = bdRightToLeft
+    ParentBiDiMode = False
+    TabOrder = 15
+    Text = '500'
+  end
+  object edtt_step: TEdit
+    Left = 169
+    Top = 80
+    Width = 54
+    Height = 21
+    BiDiMode = bdRightToLeft
+    ParentBiDiMode = False
+    TabOrder = 3
+    Text = '0,01'
+  end
+  object edtlimiar: TEdit
+    Left = 169
+    Top = 241
+    Width = 54
+    Height = 21
+    BiDiMode = bdRightToLeft
+    ParentBiDiMode = False
+    TabOrder = 11
+    Text = '20'
+  end
+  object edtt_segment: TEdit
+    Left = 169
+    Top = 214
+    Width = 54
+    Height = 21
+    BiDiMode = bdRightToLeft
+    ParentBiDiMode = False
+    TabOrder = 10
+    Text = '0'
+  end
+  object edtSalExp: TEdit
+    Left = 169
+    Top = 266
+    Width = 54
+    Height = 21
+    BiDiMode = bdRightToLeft
+    ParentBiDiMode = False
+    TabOrder = 12
+    Text = '1,5'
+  end
+  object cbLogging: TCheckBox
+    Left = 229
+    Top = 136
+    Width = 24
+    Height = 17
+    TabOrder = 6
+    OnClick = cbLoggingClick
+  end
+  object edtDeltaOmega: TEdit
+    Left = 169
+    Top = 293
+    Width = 54
+    Height = 21
+    BiDiMode = bdRightToLeft
+    ParentBiDiMode = False
+    TabOrder = 13
+    Text = '0,2'
+  end
+  object cbShifting: TCheckBox
+    Left = 16
+    Top = 369
+    Width = 186
+    Height = 17
+    Caption = 'Shifting'
+    Checked = True
+    State = cbChecked
+    TabOrder = 16
+  end
+  object edtSegSyncWindow: TEdit
+    Left = 169
+    Top = 317
+    Width = 54
+    Height = 21
+    BiDiMode = bdRightToLeft
+    ParentBiDiMode = False
+    TabOrder = 14
+    Text = '1'
+  end
+  object edtLogWindow: TEdit
+    Left = 169
+    Top = 186
+    Width = 54
+    Height = 21
+    BiDiMode = bdRightToLeft
+    ParentBiDiMode = False
+    TabOrder = 9
+    Text = '1'
+  end
+  object btnLoadImage: TButton
+    Left = 19
+    Top = 6
+    Width = 88
+    Height = 25
+    Caption = '&Load Image'
+    TabOrder = 0
+    OnClick = btnLoadImageClick
+  end
+  object btnSetLogPixels: TButton
+    Left = 132
+    Top = 6
+    Width = 91
+    Height = 25
+    Caption = '&Set Log Pixels'
+    TabOrder = 1
+    OnClick = btnSetLogPixelsClick
+  end
+  object EditStopLoggingTime: TEdit
+    Left = 169
+    Top = 160
+    Width = 54
+    Height = 21
+    BiDiMode = bdRightToLeft
+    Enabled = False
+    ParentBiDiMode = False
+    TabOrder = 7
+    Text = '1200'
+  end
+  object CheckBoxStopLoggingTime: TCheckBox
+    Left = 229
+    Top = 162
+    Width = 24
+    Height = 17
+    TabOrder = 8
+    OnClick = CheckBoxStopLoggingTimeClick
+  end
+  object ButtonSaveImage: TButton
+    Left = 526
+    Top = 492
+    Width = 88
+    Height = 25
+    Caption = '&Save Image'
+    TabOrder = 19
+    OnClick = ButtonSaveImageClick
+  end
+  object CheckBoxShowBehavior: TCheckBox
+    Left = 357
+    Top = 498
+    Width = 92
+    Height = 17
+    Caption = 'Show Behavior'
+    TabOrder = 20
+    OnClick = CheckBoxStopLoggingTimeClick
+  end
+  object Timer1: TTimer
+    Enabled = False
+    Interval = 10
+    OnTimer = Timer1Timer
+    Left = 220
+    Top = 487
+  end
+  object OpenPictureDialog1: TOpenPictureDialog
+    Left = 184
+    Top = 485
+  end
+  object SavePictureDialog1: TSavePictureDialog
+    Left = 256
+    Top = 488
+  end
+end

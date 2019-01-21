@@ -1,0 +1,16 @@
+load serie2.txt
+x = serie2-min(min(serie2));
+x = x./max(max(x));
+imshow(x')
+
+load serie.txt
+mesh(serie)
+
+
+load serie.txt;load serie2.txt;
+x = serie2-min(min(serie2));x = x./max(max(x));imshow(x')
+s = [std(serie(:,1:150),[],2) std(serie(:,151:end),[],2)];plot(s)
+
+for i=1:15
+s(:,i) = std(serie(:,(i-1)*20+1:i*20),[],2);
+end

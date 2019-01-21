@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2007/01/22 19:02:25.843.cpp,D:\Documents and Settings\Fabricio\Meus documentos\Borland Studio Projects\Unit1.cpp=D:\Documents and Settings\Fabricio\Meus documentos\Doutorado\Simulações\wc-win\wc.cpp</Transaction>
+    <Transaction>2007/01/22 19:02:25.859.h,D:\Documents and Settings\Fabricio\Meus documentos\Borland Studio Projects\Unit1.h=D:\Documents and Settings\Fabricio\Meus documentos\Doutorado\Simulações\wc-win\wc.h</Transaction>
+    <Transaction>2007/01/22 19:02:25.859.dfm,D:\Documents and Settings\Fabricio\Meus documentos\Borland Studio Projects\Unit1.dfm=D:\Documents and Settings\Fabricio\Meus documentos\Doutorado\Simulações\wc-win\wc.dfm</Transaction>
+    <Transaction>2007/01/22 19:02:51.546.bdsproj,D:\Documents and Settings\Fabricio\Meus documentos\Borland Studio Projects\Project1.bdsproj=D:\Documents and Settings\Fabricio\Meus documentos\Doutorado\Simulações\wc-win\WcProject.bdsproj</Transaction>
+    <Transaction>2007/01/22 21:15:03.453.cpp,D:\Documents and Settings\Fabricio\Meus documentos\Doutorado\Simulações\wc-win\Unit1.cpp=D:\Documents and Settings\Fabricio\Meus documentos\Doutorado\Simulações\wc-win\wcrun.cpp</Transaction>
+    <Transaction>2007/01/22 21:15:03.453.h,D:\Documents and Settings\Fabricio\Meus documentos\Doutorado\Simulações\wc-win\Unit1.h=D:\Documents and Settings\Fabricio\Meus documentos\Doutorado\Simulações\wc-win\wcrun.h</Transaction>
+    <Transaction>2007/01/22 21:21:03.203.cpp,D:\Documents and Settings\Fabricio\Meus documentos\Doutorado\Simulações\wc-win\wcrun.cpp=</Transaction>
+    <Transaction>2007/01/22 21:21:49.906.cpp,D:\Documents and Settings\Fabricio\Meus documentos\Doutorado\Simulações\wc-win\Unit1.cpp=D:\Documents and Settings\Fabricio\Meus documentos\Doutorado\Simulações\wc-win\wcrun.cpp</Transaction>
+    <Transaction>2007/01/22 21:21:49.906.h,D:\Documents and Settings\Fabricio\Meus documentos\Doutorado\Simulações\wc-win\Unit1.h=D:\Documents and Settings\Fabricio\Meus documentos\Doutorado\Simulações\wc-win\wcrun.h</Transaction>
+    <Transaction>2007/01/23 00:11:54.218.cpp,D:\Documents and Settings\Fabricio\Meus documentos\Doutorado\Simulações\wc-win\wcrun.cpp=D:\Documents and Settings\Fabricio\Meus documentos\Doutorado\Simulações\wc-win\twcrun.cpp</Transaction>
+    <Transaction>2007/01/23 00:11:54.218.h,D:\Documents and Settings\Fabricio\Meus documentos\Doutorado\Simulações\wc-win\wcrun.h=D:\Documents and Settings\Fabricio\Meus documentos\Doutorado\Simulações\wc-win\twcrun.h</Transaction>
+    <Transaction>2007/01/25 16:43:14.000.c,D:\Documents and Settings\Fabricio\Meus documentos\Doutorado\Simulações\wc-win\File1.c=D:\Documents and Settings\Fabricio\Meus documentos\Doutorado\Simulações\wc-win\dynarray.c</Transaction>
+    <Transaction>2007/01/25 17:40:19.578.c,D:\Documents and Settings\Fabricio\Meus documentos\Doutorado\Simulações\wc-win\dynarray.c=D:\Documents and Settings\Fabricio\Meus documentos\Doutorado\Simulações\wc-win\dynarray.c</Transaction>
+    <Transaction>2007/01/31 01:48:35.645.cpp,D:\Documents and Settings\Fabricio\Meus documentos\Doutorado\Simulações\wc-win\Unit2.cpp=D:\Documents and Settings\Fabricio\Meus documentos\Doutorado\Simulações\wc-win\logpixels.cpp</Transaction>
+    <Transaction>2007/01/31 01:48:35.645.h,D:\Documents and Settings\Fabricio\Meus documentos\Doutorado\Simulações\wc-win\Unit2.h=D:\Documents and Settings\Fabricio\Meus documentos\Doutorado\Simulações\wc-win\logpixels.h</Transaction>
+    <Transaction>2007/01/31 01:48:35.645.dfm,D:\Documents and Settings\Fabricio\Meus documentos\Doutorado\Simulações\wc-win\Unit2.dfm=D:\Documents and Settings\Fabricio\Meus documentos\Doutorado\Simulações\wc-win\logpixels.dfm</Transaction>
+    <Transaction>2007/01/31 12:31:54.171.cpp,D:\Documents and Settings\Fabricio\Meus documentos\Doutorado\Simulações\wc-win\Unit1.cpp=D:\Documents and Settings\Fabricio\Meus documentos\Doutorado\Simulações\wc-win\dynarray.cpp</Transaction>
+    <Transaction>2007/01/31 12:31:54.171.h,D:\Documents and Settings\Fabricio\Meus documentos\Doutorado\Simulações\wc-win\Unit1.h=D:\Documents and Settings\Fabricio\Meus documentos\Doutorado\Simulações\wc-win\dynarray.h</Transaction>
+    <Transaction>2007/01/31 12:31:59.796.cpp,D:\Documents and Settings\Fabricio\Meus documentos\Doutorado\Simulações\wc-win\dynarray.cpp=</Transaction>
+    <Transaction>2007/01/31 12:32:10.078.cpp,D:\Documents and Settings\Fabricio\Meus documentos\Doutorado\Simulações\wc-win\dynarray.cpp=</Transaction>
+    <Transaction>2007/05/07 22:53:46.937.bdsproj,D:\Documents and Settings\Fabricio\Meus documentos\Doutorado\Simulações\rossler\grid-image\WcProject.bdsproj=D:\Documents and Settings\Fabricio\Meus documentos\Doutorado\Simulações\rossler\grid-image\RossGrid.bdsproj</Transaction>
+    <Transaction>2007/05/07 22:54:05.156.cpp,D:\Documents and Settings\Fabricio\Meus documentos\Doutorado\Simulações\rossler\grid-image\wc.cpp=D:\Documents and Settings\Fabricio\Meus documentos\Doutorado\Simulações\rossler\grid-image\interface.cpp</Transaction>
+    <Transaction>2007/05/07 22:54:05.156.h,D:\Documents and Settings\Fabricio\Meus documentos\Doutorado\Simulações\rossler\grid-image\wc.h=D:\Documents and Settings\Fabricio\Meus documentos\Doutorado\Simulações\rossler\grid-image\interface.h</Transaction>
+    <Transaction>2007/05/07 22:54:05.156.dfm,D:\Documents and Settings\Fabricio\Meus documentos\Doutorado\Simulações\rossler\grid-image\wc.dfm=D:\Documents and Settings\Fabricio\Meus documentos\Doutorado\Simulações\rossler\grid-image\interface.dfm</Transaction>
+    <Transaction>2007/05/07 22:54:15.468.cpp,D:\Documents and Settings\Fabricio\Meus documentos\Doutorado\Simulações\rossler\grid-image\twcrun.cpp=D:\Documents and Settings\Fabricio\Meus documentos\Doutorado\Simulações\rossler\grid-image\rossler.cpp</Transaction>
+    <Transaction>2007/05/07 22:54:15.468.h,D:\Documents and Settings\Fabricio\Meus documentos\Doutorado\Simulações\rossler\grid-image\twcrun.h=D:\Documents and Settings\Fabricio\Meus documentos\Doutorado\Simulações\rossler\grid-image\rossler.h</Transaction>
+  </Transactions>
+</BorlandProject>
