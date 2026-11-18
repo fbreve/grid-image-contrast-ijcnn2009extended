@@ -1,5 +1,5 @@
 cff-version: 1.2.0
-message: "If you use this historical implementation or research model, please cite the associated 2009 Neural Networks article."
+message: "This repository contains the extended journal version of an IJCNN 2009 study. Please cite the 2009 Neural Networks article."
 type: software
 title: "RossGrid: Chaotic Phase Synchronization and Desynchronization in an Oscillator Network for Object Selection"
 authors:
