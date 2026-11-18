@@ -7,7 +7,7 @@ This document records the purpose of legacy files as far as it can be establishe
 - **Branch:** [`archive/2019-initial-release`](https://github.com/fbreve/grid-image-contrast-ijcnn2009extended/tree/archive/2019-initial-release)
 - **Commit:** [`fe8d54cffef4494ed3974840648ea4b9a4ca96e7`](https://github.com/fbreve/grid-image-contrast-ijcnn2009extended/commit/fe8d54cffef4494ed3974840648ea4b9a4ca96e7)
 - **Date:** January 21, 2019 (last historical GitHub upload)
-- **Publication:** *Neural Networks*, 2009. **Do not infer that the 2019 commit is the exact publication-era source.**
+- **Publication history:** first presented at **IJCNN 2009**, then selected for an **extended version in *Neural Networks* (2009)**. This repository represents the **journal version**. **Do not infer that the 2019 Git snapshot is byte-identical to the publication-era source.**
 
 The original GitHub snapshot contains **90 files totaling 37,124,690 bytes** in the Git tree. Source code, GUI form definitions, historical project metadata, binary artifacts, an executable and an archive are all preserved.
 
