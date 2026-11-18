@@ -1,6 +1,7 @@
 cff-version: 1.2.0
 message: "This repository contains the extended journal version of an IJCNN 2009 study. Please cite the 2009 Neural Networks article."
 type: software
+license: "Apache-2.0"
 title: "RossGrid: Chaotic Phase Synchronization and Desynchronization in an Oscillator Network for Object Selection"
 authors:
   - family-names: "Breve"
