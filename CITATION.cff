@@ -1,0 +1,34 @@
+cff-version: 1.2.0
+message: "If you use this historical implementation or research model, please cite the associated 2009 Neural Networks article."
+type: software
+title: "RossGrid: Chaotic Phase Synchronization and Desynchronization in an Oscillator Network for Object Selection"
+authors:
+  - family-names: "Breve"
+    given-names: "Fabricio Aparecido"
+repository-code: "https://github.com/fbreve/grid-image-contrast-ijcnn2009extended"
+url: "https://github.com/fbreve/grid-image-contrast-ijcnn2009extended"
+keywords:
+  - "chaotic phase synchronization"
+  - "Rössler oscillators"
+  - "object selection"
+  - "image processing"
+  - "C++Builder"
+preferred-citation:
+  type: article
+  title: "Chaotic Phase Synchronization and Desynchronization in an Oscillator Network for Object Selection"
+  authors:
+    - family-names: "Breve"
+      given-names: "Fabricio Aparecido"
+    - family-names: "Zhao"
+      given-names: "Liang"
+    - family-names: "Quiles"
+      given-names: "Marcos Gonçalves"
+    - family-names: "Macau"
+      given-names: "Elbert Einstein Nehrer"
+  journal: "Neural Networks"
+  volume: 22
+  issue: "5-6"
+  start: 728
+  end: 737
+  year: 2009
+  doi: "10.1016/j.neunet.2009.06.027"
