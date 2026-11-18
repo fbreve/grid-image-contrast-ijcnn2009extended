@@ -1,0 +1,24 @@
+RossGrid — historical C++Builder implementation for research on chaotic phase synchronization
+Copyright 2009 Fabricio Aparecido Breve
+
+The original RossGrid source code and repository-authored documentation are
+made available under the Apache License, Version 2.0, as stated in LICENSE.
+
+Scope clarification:
+- The Apache-2.0 grant covers project-authored source and documentation to the
+  extent that their copyright is controlled by the licensor.
+- It does NOT purport to relicense Borland/CodeGear C++Builder, VCL, its
+  components, the compiler, or other third-party tools and libraries.
+- The original RossGrid.exe, RossGrid.#00, RossGrid.res, figura1.bmp, and
+  grid-image-contrast-ijcnn2009extended.7z are retained as historical
+  artifacts; third-party rights and their redistribution permissions have
+  not been independently audited.
+- Research publications remain subject to their respective publisher and
+  author rights; this software license does not apply to the journal article.
+
+Please cite the extended 2009 Neural Networks article if using this
+implementation for academic research:
+https://doi.org/10.1016/j.neunet.2009.06.027
+
+The associated journal paper originated from an IJCNN 2009 conference
+presentation selected for a subsequent extended journal version.
