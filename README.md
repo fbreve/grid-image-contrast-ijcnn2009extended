@@ -1,12 +1,16 @@
 # RossGrid — Chaotic Phase Synchronization for Object Selection
 
-**Historical C++Builder / VCL implementation** associated with the 2009 *Neural Networks* article:
+**Historical C++Builder / VCL implementation of the **extended journal version** of a study first presented at **IJCNN 2009** and subsequently selected for publication in *Neural Networks*:
 
 > Breve, Fabricio Aparecido; Zhao, Liang; Quiles, Marcos Gonçalves; and Macau, Elbert Einstein Nehrer. **Chaotic Phase Synchronization and Desynchronization in an Oscillator Network for Object Selection**. *Neural Networks*, **22**(5–6), 728–737, 2009. DOI: [10.1016/j.neunet.2009.06.027](https://doi.org/10.1016/j.neunet.2009.06.027).
 
 **Paper:** [Publisher DOI](https://doi.org/10.1016/j.neunet.2009.06.027) · [Author-hosted manuscript (PDF)](https://www.fabriciobreve.com/artigos/ijcnn2009extended.pdf) · [arXiv preprint (posted in 2020)](https://arxiv.org/abs/2002.05493)
 
-This repository is named after the extended IJCNN 2009 work; the **publication cited here is the 2009 journal article**. The paper describes a network of coupled chaotic oscillators in which oscillators representing a salient image object can become phase synchronized, enabling object selection and attention shifts.
+### Publication history
+
+The research was **first presented at the 2009 International Joint Conference on Neural Networks (IJCNN)**. The work was then **selected for an extended version published in the journal *Neural Networks***, also in 2009. **This repository corresponds to the extended journal version**, not to a separate archive of the original IJCNN conference version. The *Neural Networks* article is therefore the **primary citation for this repository**.
+
+The extended article describes a network of coupled chaotic oscillators in which oscillators representing a salient image object can become phase synchronized, enabling object selection and attention shifts.
 
 ## Status and scope
 
@@ -49,7 +53,7 @@ The historical `RossGrid.exe` has not been tested here. If you choose to run it,
 
 ## Citation
 
-Please cite the original journal paper when using the model or the accompanying historical implementation in research:
+Please cite the **extended journal article** when using the model or the accompanying historical implementation in research:
 
 ```bibtex
 @article{breve2009chaotic,
@@ -66,7 +70,7 @@ Please cite the original journal paper when using the model or the accompanying 
 }
 ```
 
-[CITATION.cff](CITATION.cff) provides GitHub citation metadata and identifies the journal article as the preferred scholarly citation.
+[CITATION.cff](CITATION.cff) provides GitHub citation metadata and identifies the **extended journal article** as the preferred scholarly citation.
 
 ## Reproducibility and maintenance policy
 
