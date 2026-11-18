@@ -74,6 +74,8 @@ The `master` branch may receive **non-functional documentation and repository-hy
 
 The original publication predates the first GitHub upload by approximately **ten years**. For a genuine reconstruction of the published experiments, further evidence would be needed about the original source revision, IDE/compiler, dependencies, input images, run settings and numeric outputs.
 
+Potential problems identified during source review are tracked in [KNOWN_ISSUES.md](KNOWN_ISSUES.md). They remain **unverified** and were not changed as part of this documentation update.
+
 ## Copyright and reuse
 
 **No open-source license has yet been assigned to the code or the historical binary files.** Their public availability on GitHub does not itself grant permission for redistribution, modification or commercial exploitation. A software license can be added after verifying the relevant rights and any contributor/institutional obligations.
