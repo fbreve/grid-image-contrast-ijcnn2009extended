@@ -1,6 +1,6 @@
 # RossGrid — Chaotic Phase Synchronization for Object Selection
 
-**Historical C++Builder / VCL implementation of the **extended journal version** of a study first presented at **IJCNN 2009** and subsequently selected for publication in *Neural Networks*:
+**Historical C++Builder / VCL implementation** of the **extended journal version** of a study first presented at **IJCNN 2009** and subsequently selected for publication in *Neural Networks*:
 
 > Breve, Fabricio Aparecido; Zhao, Liang; Quiles, Marcos Gonçalves; and Macau, Elbert Einstein Nehrer. **Chaotic Phase Synchronization and Desynchronization in an Oscillator Network for Object Selection**. *Neural Networks*, **22**(5–6), 728–737, 2009. DOI: [10.1016/j.neunet.2009.06.027](https://doi.org/10.1016/j.neunet.2009.06.027).
 
