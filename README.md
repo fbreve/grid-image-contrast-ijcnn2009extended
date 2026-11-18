@@ -17,7 +17,7 @@ The extended article describes a network of coupled chaotic oscillators in which
 **Preserved historical research software — not a modern, supported build.**
 
 - The application uses **Borland/CodeGear C++Builder with the proprietary VCL framework**. It is not directly compilable with ordinary GCC, Clang, or Microsoft Visual C++ without a port of the GUI and platform-dependent code.
-- Original C++ source files, VCL form files, project definitions, generated artifacts, the historical Windows executable and the supplied compressed archive remain in this repository.
+- Original C++ source files, VCL form files, project definitions, the historical Windows executable and the supplied compressed archive remain on `master`. Generated compiler artifacts and editor backups are preserved in `archive/2019-initial-release` but no longer tracked in `master`.
 - **No successful contemporary compile, application launch, or reproduction of the 2009 experiments is claimed.** Historical project paths and dependencies may require restoration of a suitable C++Builder environment.
 - A frozen Git reference, [`archive/2019-initial-release`](https://github.com/fbreve/grid-image-contrast-ijcnn2009extended/tree/archive/2019-initial-release), points to commit [`fe8d54cffef4`](https://github.com/fbreve/grid-image-contrast-ijcnn2009extended/commit/fe8d54cffef4494ed3974840648ea4b9a4ca96e7) from **January 21, 2019**, before repository maintenance. This is the **earliest complete GitHub snapshot being preserved for maintenance purposes**, **not** an authenticated 2009 experimental snapshot.
 
