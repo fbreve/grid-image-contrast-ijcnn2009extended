@@ -39,7 +39,7 @@ The extended article describes a network of coupled chaotic oscillators in which
 | `*.obj`, `*.pch`, `*.tds`, `*.map`, `RossGrid.#00` | Historical binary/build-related artifacts (the `#00` file's exact purpose has not been verified) |
 | `grid-image-contrast-ijcnn2009extended.7z` | Historical compressed archive; contents have not been independently inspected |
 
-See [HISTORICAL_FILES.md](HISTORICAL_FILES.md) for what is preserved, what the IDE may regenerate, and why these objects were **not removed**.
+See [HISTORICAL_FILES.md](HISTORICAL_FILES.md) for the complete archived inventory and the 2026 cleanup. The maintained `master` branch now excludes 54 editor-history backups and 10 generated compiler/local-configuration files, saving **28,012,737 bytes** from its current tree. All removed artifacts remain available through the historical branch; `RossGrid.exe`, the `.7z` archive and `RossGrid.#00` remain on `master`.
 
 ## Working with the historical project
 
@@ -82,6 +82,6 @@ Potential problems identified during source review are tracked in [KNOWN_ISSUES.
 
 ## Copyright and reuse
 
-**No open-source license has yet been assigned to the code or the historical binary files.** Their public availability on GitHub does not itself grant permission for redistribution, modification or commercial exploitation. A software license can be added after verifying the relevant rights and any contributor/institutional obligations.
+The **original RossGrid source code and repository-authored documentation** are distributed under the [Apache License, Version 2.0](LICENSE), with attribution and scope details in [NOTICE](NOTICE).
 
-The paper and third-party development tools retain their separate copyrights; no license for them is implied by this repository.
+This license does **not** purport to grant rights to proprietary Borland/CodeGear C++Builder or VCL components, the journal article, or third-party material. The preserved `RossGrid.exe`, `RossGrid.#00`, `RossGrid.res`, `figura1.bmp` and uninspected `.7z` archive remain historical artifacts whose embedded third-party rights and redistribution permissions have not been independently verified.
