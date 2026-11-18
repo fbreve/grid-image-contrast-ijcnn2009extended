@@ -1,0 +1,32 @@
+# IDE/compiler-generated files from the historical Borland/CodeGear toolchain
+*.obj
+*.pch
+*.tds
+*.map
+*.~*
+*.bdsproj.local
+*.cbproj.local
+*.local
+*.#??
+
+# IDE local history (the existing historical directory remains tracked)
+__history/
+
+# New compiled executables and run output
+*.exe
+/serie.txt
+/serie2.txt
+/serie3.txt
+/serie4.txt
+
+# Operating-system and editor temporary files
+Thumbs.db
+.DS_Store
+*.swp
+*.swo
+*.tmp
+
+# IMPORTANT: These patterns only affect new/untracked files.
+# Original binaries, executable, output placeholders, and backups already
+# committed in Git are intentionally preserved for historical reproducibility.
+# The .7z archive, *.res resources, and old project files are also preserved.
